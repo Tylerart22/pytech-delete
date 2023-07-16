@@ -1,0 +1,61 @@
+# Import pymongo library
+from pymongo import MongoClient
+
+# Connect to MongoDB
+client = MongoClient("mongodb://localhost:27017")
+
+# Access the pytech database
+db = client.pytech
+
+# Access the students collection
+students = db.students
+
+# Display all documents in the students collection
+print("-- DISPLAYING STUDENTS DOCUMENTS --")
+for student in students.find():
+    print(student)
+
+# Insert a new document with student_id 1010
+new_student = {
+    "student_id": 1010,
+    "first_name": "Johnny",
+    "last_name": "Smalls",
+    "enrollments": [
+        {
+            "term": "Fall 2023",
+            "gpa": 3.9,
+            "start_date": "2023-08-01",
+            "end_date": "2023-12-15",
+            "courses": [
+                {
+                    "course_id": "CS101",
+                    "description": "Introduction to Computer Science",
+                    "instructor": "Prof. Smith"
+                },
+                {
+                    "course_id": "MATH202",
+                    "description": "Linear Algebra",
+                    "instructor": "Prof. Johnson"
+                }
+            ]
+        }
+    ]
+}
+students.insert_one(new_student)
+print("\n-- INSERTED NEW STUDENT DOCUMENT --")
+print(new_student)
+
+# Find and display the newly inserted document
+found_student = students.find_one({"student_id": 1010})
+print("\n-- FOUND STUDENT DOCUMENT --")
+print(found_student)
+
+# Delete the document with student_id 1010
+delete_result = students.delete_one({"student_id": 1010})
+print("\n-- DELETED STUDENT DOCUMENT --")
+print(f"Deleted Count: {delete_result.deleted_count}")
+
+# Display all documents in the students collection after deletion
+print("\n-- DISPLAYING STUDENTS DOCUMENTS AFTER DELETION --")
+for student in students.find():
+    print(student)
